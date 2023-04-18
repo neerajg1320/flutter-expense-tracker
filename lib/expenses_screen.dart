@@ -31,6 +31,7 @@ class _ExpensesScreenState  extends State<ExpensesScreen> {
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (ctx) => NewExpense(
         onAddExpense: _addExpense,
       ),
@@ -40,6 +41,12 @@ class _ExpensesScreenState  extends State<ExpensesScreen> {
   void _addExpense(expense) {
     setState(() {
       _registeredExpenses.add(expense);  
+    });
+  }
+
+  void _removeExpense(Expense expense) {
+    setState(() {
+      _registeredExpenses.remove(expense);
     });
   }
 
@@ -60,7 +67,10 @@ class _ExpensesScreenState  extends State<ExpensesScreen> {
           // Toolbar with the Add button
           const Text('The chart'),
           Expanded(
-            child: ExpensesList(expenses: _registeredExpenses)
+            child: ExpensesList(
+              expenses: _registeredExpenses,
+              onRemoveExpense: _removeExpense,
+            ),
           ),
         ],
       ),
