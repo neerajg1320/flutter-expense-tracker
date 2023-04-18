@@ -52,6 +52,17 @@ class _ExpensesScreenState  extends State<ExpensesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Widget mainContent = const Center(
+      child: Text('Start adding expenses'),
+    );
+
+    if (_registeredExpenses.isNotEmpty) {
+      mainContent = ExpensesList(
+        expenses: _registeredExpenses,
+        onRemoveExpense: _removeExpense,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter Expense Tracker'),
@@ -67,10 +78,7 @@ class _ExpensesScreenState  extends State<ExpensesScreen> {
           // Toolbar with the Add button
           const Text('The chart'),
           Expanded(
-            child: ExpensesList(
-              expenses: _registeredExpenses,
-              onRemoveExpense: _removeExpense,
-            ),
+            child: mainContent,
           ),
         ],
       ),
