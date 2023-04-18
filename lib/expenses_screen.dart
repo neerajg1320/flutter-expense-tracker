@@ -1,3 +1,4 @@
+import 'package:expense_tracker/widgets/expenses/new_expense.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/widgets/expenses/expenses_list.dart';
@@ -25,11 +26,30 @@ class _ExpensesScreenState  extends State<ExpensesScreen> {
         category: Category.leisure)        
   ];
     
+  void _openAddExpenseOverlay() {
+    // print('clicked add');
+
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => const NewExpense(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Flutter Expense Tracker'),
+        actions: [
+          IconButton(
+            onPressed: _openAddExpenseOverlay,
+            icon: const Icon(Icons.add),
+          ),
+        ],
+      ),
       body: Column(
         children:  [
+          // Toolbar with the Add button
           const Text('The chart'),
           Expanded(
             child: ExpensesList(expenses: _registeredExpenses)
