@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:expense_tracker/expenses.dart';
+import 'package:expense_tracker/expenses_screen.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: Expenses()
+    home: ExpensesScreen()
   ));
 }
