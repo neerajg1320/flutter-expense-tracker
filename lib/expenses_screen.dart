@@ -71,6 +71,10 @@ class _ExpensesScreenState  extends State<ExpensesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    
+    
     Widget mainContent = const Center(
       child: Text('Start adding expenses'),
     );
@@ -92,15 +96,26 @@ class _ExpensesScreenState  extends State<ExpensesScreen> {
           ),
         ],
       ),
-      body: Column(
-        children:  [
-          // Toolbar with the Add button
-          Chart(expenses: _registeredExpenses),
-          Expanded(
-            child: mainContent,
-          ),
-        ],
-      ),
+      body: width < 600
+          ? Column(
+              children: [
+                // Toolbar with the Add button
+                Chart(expenses: _registeredExpenses),
+                Expanded(
+                  child: mainContent,
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(
+                  child: Chart(expenses: _registeredExpenses),
+                ),
+                Expanded(
+                  child: mainContent,
+                ),                
+              ],
+            ),
     );
   }
 }
