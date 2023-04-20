@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/models/expense.dart';
 
@@ -41,14 +43,27 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
-  void _submitExpenseData() {
-    final enteredAmount = double.tryParse(_amountController.text);
-    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+  void _showDialog() {
+    if (Platform.isIOS) {
+      print('Running on iOS');
 
-    if (_titleController.text.trim().isEmpty ||
-        amountIsInvalid ||
-        _selectedDate == null) {
-      // show error message
+      showCupertinoDialog(
+          context: context,
+          builder: (ctx) => CupertinoAlertDialog(
+                title: const Text('Invalid Input'),
+                content: const Text(
+                    'Please make sure a valid title, amount and category'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                    },
+                    child: const Text('Ok'),
+                  ),
+                ],
+              ),
+      );
+    }  else {
       showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
@@ -63,7 +78,21 @@ class _NewExpenseState extends State<NewExpense> {
                     child: const Text('Ok'),
                   ),
                 ],
-              ));
+              ),
+      );
+    }
+  }
+
+  void _submitExpenseData() {
+    final enteredAmount = double.tryParse(_amountController.text);
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+
+    if (_titleController.text.trim().isEmpty ||
+        amountIsInvalid ||
+        _selectedDate == null) {
+
+      _showDialog();
+      return;
     }
 
     widget.onAddExpense(
@@ -82,12 +111,8 @@ class _NewExpenseState extends State<NewExpense> {
     final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
 
     return LayoutBuilder(builder: (ctx, constraints) {
+      final width = constraints.maxWidth;
     
-      // print(constraints.minWidth);
-      // print(constraints.maxWidth);
-      // print(constraints.minHeight);
-      // print(constraints.maxHeight);
-
       return SizedBox(
         height: double.infinity,
         child: SingleChildScrollView(
@@ -95,12 +120,36 @@ class _NewExpenseState extends State<NewExpense> {
             padding: EdgeInsets.fromLTRB(16, 48, 16, keyboardSpace + 16),
             child: Column(
               children: [
-                TextField(
-                  maxLength: 50,
-                  keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(label: Text('Title')),
-                  controller: _titleController,
-                ),
+                if (width >= 600)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          maxLength: 50,
+                          keyboardType: TextInputType.text,
+                          decoration: const InputDecoration(label: Text('Title')),
+                          controller: _titleController,
+                        ),
+                      ),
+                      const SizedBox(width: 24,),
+                      Expanded(
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                              prefixText: '\$ ', label: Text('Amount')),
+                          controller: _amountController,
+                        ),
+                      ),                    
+                  ],)
+                else
+                  TextField(
+                    maxLength: 50,
+                    keyboardType: TextInputType.text,
+                    decoration: const InputDecoration(label: Text('Title')),
+                    controller: _titleController,
+                  ),
+
                 Row(
                   children: [
                     Expanded(
